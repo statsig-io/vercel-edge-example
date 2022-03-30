@@ -4,18 +4,17 @@ export default function Index() {
   return (
     <Page>
       <Text variant="h1" className="mb-6">
-        AB testing with buckets
+        AB testing with Statsig
       </Text>
       <Text className="mb-4">
-        In this demo we use cookies to assign a bucket with the variant to show.
-        Visit one of the pages below and a bucket will be assigned to you.
+        In this demo we use Statsig's Edge SDK to pull experiment variant and
+        show the resulting allocation.  As you change the user-id you will see
+        the variant assignment change, but as long as the user-id is constant,
+        the variant assignment will be sticky.
       </Text>
       <List>
         <li>
           <Link href="/home">/home</Link>
-        </li>
-        <li>
-          <Link href="/marketing">/marketing</Link>
         </li>
       </List>
     </Page>

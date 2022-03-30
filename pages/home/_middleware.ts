@@ -1,20 +1,45 @@
-import { NextRequest, NextResponse } from 'next/server'
-import { getBucket } from '@lib/ab-testing'
-import { HOME_BUCKETS } from '@lib/buckets'
+import { NextFetchEvent, NextRequest, NextResponse } from 'next/server'
+import statsig from 'statsig-node';
 
-const COOKIE_NAME = 'bucket-home'
+const UID_COOKIE = 'uid';
 
-export function middleware(req: NextRequest) {
-  // Get the bucket cookie
-  const bucket = req.cookies[COOKIE_NAME] || getBucket(HOME_BUCKETS)
-  const url = req.nextUrl.clone()
-  url.pathname = `/home/${bucket}`
-  const res = NextResponse.rewrite(url)
+export async function middleware(req: NextRequest, event: NextFetchEvent) {
+  await initialize();
 
-  // Add the bucket to cookies if it's not there
-  if (!req.cookies[COOKIE_NAME]) {
-    res.cookie(COOKIE_NAME, bucket)
+  const user = getUser(req);
+  const expConfig = await statsig.getExperiment(user, 'equal_splits');
+  const shape_variant = expConfig.get('shape', 'square');
+
+  console.log(expConfig);
+
+  const url = req.nextUrl.clone();
+  url.pathname = `/home/${shape_variant}`;
+  const res = NextResponse.rewrite(url);
+
+  if (!req.cookies[UID_COOKIE]) {
+    res.cookie(UID_COOKIE, user.userID);
   }
 
-  return res
+  return res;
+}
+
+async function initialize() {
+  const apiKey = process.env.STATSIG_SERVER_API_KEY;
+  if (!apiKey) {
+    throw new Error('API Key not set in .env');
+  }
+  await statsig.initialize(apiKey);
+}
+
+function getUser(req: NextRequest) {
+  let uid = req.cookies[UID_COOKIE];
+  if (!uid) {
+    uid = crypto.randomUUID();
+  }
+  return {
+    userID: uid,
+    userAgent: req?.ua?.ua,
+    country: req?.geo?.country,
+    ip: req.ip,
+  };
 }

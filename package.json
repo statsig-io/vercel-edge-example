@@ -1,5 +1,5 @@
 {
-  "name": "ab-testing",
+  "name": "ab-testing-with-statsig",
   "version": "1.0.0",
   "license": "MIT",
   "scripts": {
@@ -13,7 +13,8 @@
     "js-cookie": "^3.0.1",
     "next": "^12.1.0",
     "react": "latest",
-    "react-dom": "latest"
+    "react-dom": "latest",
+    "statsig-node": "^4.14.0"
   },
   "devDependencies": {
     "@types/js-cookie": "^3.0.1",
