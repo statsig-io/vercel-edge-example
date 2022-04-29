@@ -35,7 +35,7 @@ async function initialize() {
 function getUser(req: NextRequest) {
   let uid = req.cookies[UID_COOKIE];
   if (!uid) {
-    uid = crypto.randomUUID();
+    uid = String(Math.random() * 100000);
   }
   return {
     userID: uid,
