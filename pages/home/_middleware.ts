@@ -1,7 +1,9 @@
 import { NextFetchEvent, NextRequest, NextResponse } from 'next/server'
 import statsig from 'statsig-node';
+import { Redis } from '@upstash/redis';
 
 const UID_COOKIE = 'uid';
+const BOOSTRAP_KEY = 'statsig::bootstrap';
 
 export async function middleware(req: NextRequest, event: NextFetchEvent) {
   await initialize();
@@ -20,7 +22,7 @@ export async function middleware(req: NextRequest, event: NextFetchEvent) {
     res.cookie(UID_COOKIE, user.userID);
   }
 
-  // statsig.shutdown();
+  statsig.shutdown();
   return res;
 }
 
@@ -29,7 +31,15 @@ async function initialize() {
   if (!apiKey) {
     throw new Error('API Key not set in .env');
   }
-  await statsig.initialize(apiKey);
+
+  const redis = Redis.fromEnv();
+  const bootstrapValues = await redis.get(BOOSTRAP_KEY);
+  await statsig.initialize(apiKey, {
+    bootstrapValues: (bootstrapValues ? JSON.stringify(bootstrapValues) : undefined),
+    rulesUpdatedCallback: async (specsString) => {
+      await redis.set(BOOSTRAP_KEY, specsString);
+    }
+  });  
 }
 
 function getUser(req: NextRequest) {
