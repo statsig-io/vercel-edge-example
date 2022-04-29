@@ -32,7 +32,12 @@ async function initialize() {
     throw new Error('API Key not set in .env');
   }
 
-  const redis = Redis.fromEnv();
+  const url = process.env.UPSTASH_REDIS_REST_URL;
+  const token = process.env.UPSTASH_REDIS_REST_TOKEN;
+  const redis = new Redis({
+    url: (url ?? ''),
+    token: (token ?? ''),
+  });
   const bootstrapValues = await redis.get(BOOSTRAP_KEY);
   await statsig.initialize(apiKey, {
     bootstrapValues: (bootstrapValues ? JSON.stringify(bootstrapValues) : undefined),
