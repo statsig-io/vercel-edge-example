@@ -4,7 +4,7 @@ By A/B testing directly on the server-side, you'll reduce layout shift from clie
 
 ## Demo
 
-https://edge-functions-ab-testing-with-statsig.vercel.app
+PLACEHOLDER: https://edge-functions-ab-testing-with-statsig.vercel.app
 
 Since the different variants are generated statically on the server side, it mitigates any potential layout shift that could happen when a variant is inserted into the DOM client side, hence improving your site's performance.
 
@@ -21,9 +21,9 @@ Deploy the example using [Vercel](https://vercel.com?utm_source=github&utm_mediu
 Execute [`create-next-app`](https://github.com/vercel/next.js/tree/canary/packages/create-next-app) with [npm](https://docs.npmjs.com/cli/init) or [Yarn](https://yarnpkg.com/lang/en/docs/cli/create/) to bootstrap the example:
 
 ```bash
-npx create-next-app --example https://github.com/vercel/examples/tree/main/edge-functions/ab-testing-with-statsig ab-testing-with-statsig
+npx create-next-app --example https://github.com/statsig-io/vercel-edge-example ab-testing-with-statsig
 # or
-yarn create next-app --example https://github.com/vercel/examples/tree/main/edge-functions/ab-testing-with-statsig ab-testing-with-statsig
+yarn create next-app --example https://github.com/statsig-io/vercel-edge-example ab-testing-with-statsig
 ```
 
 Next, run Next.js in development mode:
