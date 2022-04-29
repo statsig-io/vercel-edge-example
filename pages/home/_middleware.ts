@@ -7,7 +7,7 @@ export async function middleware(req: NextRequest, event: NextFetchEvent) {
   await initialize();
 
   const user = getUser(req);
-  const expConfig = await statsig.getExperiment(user, 'equal_splits');
+  const expConfig = await statsig.getExperiment(user, 'test_vercel_variants');
   const shape_variant = expConfig.get('shape', 'square');
 
   console.log(expConfig);
@@ -20,6 +20,7 @@ export async function middleware(req: NextRequest, event: NextFetchEvent) {
     res.cookie(UID_COOKIE, user.userID);
   }
 
+  // statsig.shutdown();
   return res;
 }
 
